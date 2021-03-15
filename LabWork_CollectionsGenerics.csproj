@@ -6,8 +6,4 @@
     <StartupObject>LabWork_CollectionsGenerics.Program</StartupObject>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\LabWork_Classes\LabWork_Classes.csproj" />
-  </ItemGroup>
-
 </Project>

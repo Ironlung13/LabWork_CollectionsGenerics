@@ -1,7 +1,7 @@
-﻿using LabWork_Classes;
-using System;
+﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using LabWork_Classes;
 
 namespace LabWork_CollectionsGenerics
 {

@@ -6,10 +6,4 @@
     <StartupObject>LabWork_CollectionsGenerics.Program</StartupObject>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Reference Include="LabWork_Classes">
-      <HintPath>..\LabWork_Classes\bin\Debug\netcoreapp3.1\LabWork_Classes.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace LabWork_CollectionsGenerics
 {
@@ -47,7 +48,6 @@ namespace LabWork_CollectionsGenerics
         public Node<T>? Last { get => head?.prev; }
         public int Count { get; private set; }
         public bool IsReadOnly { get => false; }
-
         public T this[int index]
         {
             get
@@ -83,6 +83,25 @@ namespace LabWork_CollectionsGenerics
                 node.item = value;
             }
         }
+        public override string ToString()
+        {
+            if (head is null)
+            {
+                return "Empty.";
+            }
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"Underlying type: {typeof(T).FullName}\n");
+            int index = 0;
+            foreach (var item in this)
+            {
+                sb.Append($"Node {index}: {item}\n");
+                index++;
+            }
+
+            return sb.ToString();
+        }
+
         public Node<T> Add(T item)
         {
             return AddLast(item);
@@ -185,7 +204,6 @@ namespace LabWork_CollectionsGenerics
             }
             node.list = this;
         }
-
         public void Clear()
         {
             Node<T> current = head;

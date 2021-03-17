@@ -20,7 +20,6 @@ namespace LabWork_CollectionsGenerics
         {
             return $"Side: {Side}, Perimeter: {Perimeter}, Area: {Area:F2}";
         }
-
         public static bool CanExist(Hexagon hex)
         {
             if (hex.Side >= 0)
@@ -41,18 +40,25 @@ namespace LabWork_CollectionsGenerics
             return 3d * Math.Sqrt(3) * Math.Pow(Side, 2d) / 2d;
         }
 
-
         public int CompareTo([AllowNull] Hexagon other) //Сравнение по длине ребра
         {
-            if (other == null)
+            if (other is null)
                 return 1;
             return Side.CompareTo(other.Side);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
         public static bool operator >(Hexagon hex1, Hexagon hex2)
         {
             return hex1.CompareTo(hex2) > 0;
         }
-
         public static bool operator <(Hexagon hex1, Hexagon hex2)
         {
             return hex1.CompareTo(hex2) < 0;
@@ -61,10 +67,17 @@ namespace LabWork_CollectionsGenerics
         {
             return hex1.CompareTo(hex2) >= 0;
         }
-
         public static bool operator <=(Hexagon hex1, Hexagon hex2)
         {
             return hex1.CompareTo(hex2) <= 0;
+        }
+        public static bool operator !=(Hexagon hex1, Hexagon hex2)
+        {
+            return hex1.CompareTo(hex2) != 0;
+        }
+        public static bool operator ==(Hexagon hex1, Hexagon hex2)
+        {
+            return hex1.CompareTo(hex2) == 0;
         }
     }
 }

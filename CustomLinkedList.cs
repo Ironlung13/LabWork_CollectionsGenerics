@@ -29,6 +29,13 @@ namespace LabWork_CollectionsGenerics
                 throw;
             }
         }
+        public CustomLinkedList(params T[] items)
+        {
+            foreach (var item in items)
+            {
+                Add(item);
+            }
+        }
         ~CustomLinkedList()
         {
             Clear();
@@ -341,6 +348,30 @@ namespace LabWork_CollectionsGenerics
             do
             {
                 sw.WriteLine($"Node {nodeIndex}: {node}");
+                nodeIndex++;
+                node = node.next;
+            }
+            while (node != head);
+        }
+        public void DisplayToConsole()
+        {
+            if (head is null)
+            {
+                if (Count == 0)
+                {
+                    Console.WriteLine("List is empty.");
+                }
+                else
+                {
+                    Console.WriteLine("Head node is null. Can't display.");
+                }
+                return;
+            }
+            Node<T> node = head;
+            int nodeIndex = 0;
+            do
+            {
+                Console.WriteLine($"Node {nodeIndex}: {node}");
                 nodeIndex++;
                 node = node.next;
             }

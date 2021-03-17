@@ -1,12 +1,52 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
 
 namespace LabWork_CollectionsGenerics
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
+        {
+            Console.WriteLine("Выберите часть задания:");
+            Console.WriteLine("1: Collections/Generics.");
+            Console.WriteLine("2: Serialization.");
+            Console.WriteLine("3: Deserialization.");
+        TaskChoice:
+            switch (Console.ReadLine())
+            {
+                case "1":
+                    Console.Clear();
+                    CollectionTask();
+                    break;
+                case "2":
+                    Console.Clear();
+                    SerializationTask();
+                    break;
+                case "3":
+                    Console.Clear();
+                    DeserializationTask();
+                    break;
+                default:
+                    goto TaskChoice;
+            }
+            Console.WriteLine("Для выхода, введите \"q\".");
+            Console.WriteLine("Для перезапуска программы, введите другое.");
+            switch (Console.ReadLine())
+            {
+                case "q":
+                case "Q":
+                    return;
+                default:
+                    Console.Clear();
+                    Main();
+                    return;
+            }
+        }
+
+        public static void CollectionTask()
         {
             string separator = new string('_', 64);
             //Создаем коллекцию с несколькими элементами
@@ -69,7 +109,7 @@ namespace LabWork_CollectionsGenerics
             CustomLinkedList<Hexagon>[] listArray = new[] { list1, list2, list3, list4 };
 
             //Сделаем LINQ запросы по массиву
-            Console.WriteLine($"\n\n{' ', 32}LINQ Запросы:");
+            Console.WriteLine($"\n\n{' ',32}LINQ Запросы:");
             //Запрос 1: найти количество коллекций, содержащих заданное значение (периметр > 69)
             var applicableListCount = (from list in listArray
                                        from item in list
@@ -84,8 +124,53 @@ namespace LabWork_CollectionsGenerics
             Console.WriteLine(separator);
             Console.WriteLine($"Максимальная коллекция по количеству элементов:\n{lists.Last()}");
             Console.WriteLine(separator);
+        }
+        public static void SerializationTask(string fileName = "SerializedCollection.dat")
+        {
+            CustomLinkedList<Hexagon> list = new CustomLinkedList<Hexagon>(new Hexagon(15), new Hexagon(10), new Hexagon(7), new Hexagon(99), new Hexagon(1));
+            Console.WriteLine("Коллекция:");
+            Console.WriteLine(list);
+            BinaryFormatter bf = new BinaryFormatter();
+            try
+            {
+                using Stream stream = File.Open(fileName, FileMode.Create);
+                bf.Serialize(stream, list);
+                Console.WriteLine($"Коллекция {nameof(list)} сериализована в файл \"{fileName}\"");
+            }
+            catch (SerializationException)
+            {
+                Console.WriteLine("Ошибка сериализации.");
+            }
+        }
+        public static void DeserializationTask(string fileName = "SerializedCollection.dat")
+        {
+            if (File.Exists(fileName))
+            {
+                try
+                {
+                    BinaryFormatter bf = new BinaryFormatter();
+                    CustomLinkedList<Hexagon> desirList;
+                    Console.WriteLine("Коллекция после десериализации:");
+                    using (Stream stream = File.Open(fileName, FileMode.Open))
+                    {
+                        desirList = (CustomLinkedList<Hexagon>)bf.Deserialize(stream);
+                    }
 
-            Console.ReadLine();
+                    Console.WriteLine(desirList);
+                }
+                catch (SerializationException)
+                {
+                    Console.WriteLine("Не удалось десериализовать файл. Выход из метода.");
+                }
+                catch(Exception)
+                {
+                    Console.WriteLine("Неожиданная ошибка. Выход из метода.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Файл {fileName} не существует. Выход из метода.");
+            }
         }
     }
 }

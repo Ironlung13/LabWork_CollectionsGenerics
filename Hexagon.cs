@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Serialization;
 
 namespace LabWork_CollectionsGenerics
 {
-    public class Hexagon : IComparable<Hexagon>
+    [Serializable]
+    public class Hexagon : IComparable<Hexagon>, ISerializable
     {
-        public double Side { get; }
-        public double Perimeter { get => GetPerimeter(); }
-        public double Area { get => GetArea(); }
         public Hexagon(double side)
         {
             if (side <= 0)
@@ -16,6 +15,13 @@ namespace LabWork_CollectionsGenerics
             }
             Side = side;
         }
+        public Hexagon(SerializationInfo info, StreamingContext context)
+        {
+            Side = (double)info.GetValue("Side", typeof(double));
+        }
+        public double Side { get; }
+        public double Perimeter { get => GetPerimeter(); }
+        public double Area { get => GetArea(); }
         public override string ToString()
         {
             return $"Side: {Side}, Perimeter: {Perimeter}, Area: {Area:F2}";
@@ -55,6 +61,12 @@ namespace LabWork_CollectionsGenerics
         {
             return base.GetHashCode();
         }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Side", Side);
+        }
+
         public static bool operator >(Hexagon hex1, Hexagon hex2)
         {
             return hex1.CompareTo(hex2) > 0;

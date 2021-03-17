@@ -8,10 +8,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Runtime.Serialization;
 
 namespace LabWork_CollectionsGenerics
 {
-    public class CustomLinkedList<T> : IEnumerable<T>
+    [Serializable]
+    public class CustomLinkedList<T> : IEnumerable<T>, ISerializable
     {
         public CustomLinkedList() { }
         public CustomLinkedList(Node<T> node)
@@ -37,6 +39,17 @@ namespace LabWork_CollectionsGenerics
                 Add(item);
             }
         }
+        public CustomLinkedList(SerializationInfo info, StreamingContext context)
+        {
+            int count = (int)info.GetValue("Count", typeof(int));
+            int index = 0;
+            while (index < count)
+            {
+                var item = (T)info.GetValue($"{index}", typeof(T));
+                Add(item);
+                index++;
+            }
+        }
         ~CustomLinkedList()
         {
             Clear();
@@ -46,7 +59,7 @@ namespace LabWork_CollectionsGenerics
 
         public Node<T>? First { get => head; }
         public Node<T>? Last { get => head?.prev; }
-        public int Count { get; private set; }
+        public int Count { get; private set; } = 0;
         public bool IsReadOnly { get => false; }
         public T this[int index]
         {
@@ -490,7 +503,6 @@ namespace LabWork_CollectionsGenerics
         {
             return GetEnumerator();
         }
-
         public struct Enumerator : IEnumerator<T>, IEnumerator
         {
             private readonly CustomLinkedList<T> list;
@@ -553,5 +565,16 @@ namespace LabWork_CollectionsGenerics
             {
             }
         }
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Count", Count);
+            int index = 0;
+            foreach (var item in this)
+            {
+                info.AddValue($"{index}", item);
+                index++;
+            }
+        }
+
     }
 }

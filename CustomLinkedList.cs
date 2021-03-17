@@ -4,13 +4,13 @@
 #pragma warning disable CS8600
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace LabWork_CollectionsGenerics
 {
-    public class CustomLinkedList<T>
+    public class CustomLinkedList<T> : IEnumerable<T>
     {
         public CustomLinkedList() { }
         public CustomLinkedList(Node<T> node)
@@ -35,16 +35,17 @@ namespace LabWork_CollectionsGenerics
         }
 
         internal Node<T>? head;
-        public Node<T>? First { get => head; } 
-        public Node<T>? Last { get => head?.prev; } 
-        public int Count { get; private set; } 
+
+        public Node<T>? First { get => head; }
+        public Node<T>? Last { get => head?.prev; }
+        public int Count { get; private set; }
         public bool IsReadOnly { get => false; }
 
         public T this[int index]
         {
-            get 
+            get
             {
-                if (head == null)
+                if (head is null)
                     throw new ArgumentNullException("head of list is null.");
 
                 if (index >= Count || index < 0)
@@ -60,9 +61,9 @@ namespace LabWork_CollectionsGenerics
             }
             set
             {
-                if (value == null)
+                if (value is null)
                     throw new ArgumentNullException("Tried to assign null to value");
-                if (head == null)
+                if (head is null)
                     throw new ArgumentNullException("head of list is null.");
                 if (index >= Count || index < 0)
                     throw new IndexOutOfRangeException("tried to access nonexisting node.");
@@ -82,7 +83,7 @@ namespace LabWork_CollectionsGenerics
         public Node<T> AddAfter(Node<T> node, T value)
         {
             ValidateNode(node);
-            
+
             Node<T> result = new Node<T>(node.list, value);
             InternalInsertNodeBefore(node.next, result);
             return result;
@@ -101,7 +102,7 @@ namespace LabWork_CollectionsGenerics
         public Node<T> AddFirst(T value)
         {
             Node<T> result = new Node<T>(this, value);
-            if (head == null)
+            if (head is null)
             {
                 InternalInsertNodeToEmptyList(result);
             }
@@ -115,7 +116,7 @@ namespace LabWork_CollectionsGenerics
         public Node<T> AddLast(T value)
         {
             Node<T> result = new Node<T>(this, value);
-            if (head == null)
+            if (head is null)
             {
                 InternalInsertNodeToEmptyList(result);
             }
@@ -152,7 +153,7 @@ namespace LabWork_CollectionsGenerics
         {
             ValidateNewNode(node);
 
-            if (head == null)
+            if (head is null)
             {
                 InternalInsertNodeToEmptyList(node);
             }
@@ -167,7 +168,7 @@ namespace LabWork_CollectionsGenerics
         {
             ValidateNewNode(node);
 
-            if (head == null)
+            if (head is null)
             {
                 InternalInsertNodeToEmptyList(node);
             }
@@ -223,17 +224,17 @@ namespace LabWork_CollectionsGenerics
         }
         public void RemoveFirst()
         {
-            if (head == null) 
-            { 
-                throw new InvalidOperationException("list is empty."); 
+            if (head is null)
+            {
+                throw new InvalidOperationException("list is empty.");
             }
             InternalRemoveNode(head);
         }
         public void RemoveLast()
         {
-            if (head == null) 
-            { 
-                throw new InvalidOperationException("list is empty."); 
+            if (head is null)
+            {
+                throw new InvalidOperationException("list is empty.");
             }
             InternalRemoveNode(head.prev);
         }
@@ -261,7 +262,7 @@ namespace LabWork_CollectionsGenerics
                 {
                     do
                     {
-                        if (node.item == null)
+                        if (node.item is null)
                         {
                             return node;
                         }
@@ -273,7 +274,7 @@ namespace LabWork_CollectionsGenerics
         }
         public Node<T>? FindLast(T value)
         {
-            if (head == null) return null;
+            if (head is null) return null;
 
             Node<T>? last = head.prev;
             Node<T>? node = last;
@@ -295,7 +296,7 @@ namespace LabWork_CollectionsGenerics
                 {
                     do
                     {
-                        if (node.item == null)
+                        if (node.item is null)
                         {
                             return node;
                         }
@@ -307,10 +308,10 @@ namespace LabWork_CollectionsGenerics
         }
         public void BubbleSort()
         {
-            if (head == null || Count <= 1)
+            if (head is null || Count <= 1)
                 return;
 
-            Node<T> node = head;
+            Node<T> node;
             int maxIndex = Count - 1;
             while (maxIndex > 0)
             {
@@ -330,22 +331,20 @@ namespace LabWork_CollectionsGenerics
         }
         public void SaveToFile(string fileName = "Linked List.io")
         {
-            if (head == null || Count == 0)
+            if (head is null || Count == 0)
             {
                 throw new InvalidOperationException("Can't save null to file.");
             }
-            using (StreamWriter sw = File.CreateText(fileName))
+            using StreamWriter sw = File.CreateText(fileName);
+            Node<T> node = head;
+            int nodeIndex = 0;
+            do
             {
-                Node<T> node = head;
-                int nodeIndex = 0;
-                do
-                {
-                    sw.WriteLine($"Node {nodeIndex}: {node}");
-                    nodeIndex++;
-                    node = node.next;
-                }
-                while (node != head);
+                sw.WriteLine($"Node {nodeIndex}: {node}");
+                nodeIndex++;
+                node = node.next;
             }
+            while (node != head);
         }
         private void InternalInsertNodeBefore(Node<T> node, Node<T> newNode)
         {
@@ -372,7 +371,7 @@ namespace LabWork_CollectionsGenerics
             {
                 throw new InvalidOperationException("node is linked up to another list.");
             }
-            if (head == null && Count == 0)
+            if (head is null && Count == 0)
             {
                 throw new InvalidOperationException("list is empty.");
             }
@@ -395,7 +394,7 @@ namespace LabWork_CollectionsGenerics
         }
         private void ValidateNewNode(Node<T> node)
         {
-            if (node == null)
+            if (node is null)
             {
                 throw new ArgumentNullException("node");
             }
@@ -407,7 +406,7 @@ namespace LabWork_CollectionsGenerics
         }
         private void ValidateNode(Node<T> node)
         {
-            if (node == null)
+            if (node is null)
             {
                 throw new ArgumentNullException("node");
             }
@@ -429,5 +428,81 @@ namespace LabWork_CollectionsGenerics
             node2.item = temp;
         }
 
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public Enumerator GetEnumerator()
+        {
+            return new Enumerator(this);
+        }
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public struct Enumerator : IEnumerator<T>, IEnumerator
+        {
+            private readonly CustomLinkedList<T> list;
+            private Node<T>? node;
+            private T current;
+            private int index;
+
+            internal Enumerator(CustomLinkedList<T> list)
+            {
+                this.list = list;
+                node = list.head;
+                current = default;
+                index = 0;
+            }
+
+            public T Current
+            {
+                get { return current; }
+            }
+
+            object? IEnumerator.Current
+            {
+                get
+                {
+                    if (index == 0 || (index == list.Count + 1))
+                    {
+                        throw new InvalidOperationException("enum can't happen.");
+                    }
+
+                    return current;
+                }
+            }
+
+            public bool MoveNext()
+            {
+                if (node is null)
+                {
+                    index = list.Count + 1;
+                    return false;
+                }
+
+                index++;
+                current = node.item;
+                node = node.next;
+                if (node == list.head)
+                {
+                    node = null;
+                }
+                return true;
+            }
+
+            void IEnumerator.Reset()
+            {
+                current = default;
+                node = list.head;
+                index = 0;
+            }
+
+            public void Dispose()
+            {
+            }
+        }
     }
 }

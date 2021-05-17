@@ -33,7 +33,7 @@ namespace LabWork_CollectionsGenerics
             else
                 return false;
         }
-        public double GetPerimeter()
+        public double GetCircumference()
         {
             //x - длина ребра
             //Периметр шестиугольника = 6 * x
